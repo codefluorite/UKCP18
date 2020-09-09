@@ -1,0 +1,274 @@
+#clear r memory
+rm(list=ls())
+options(scipen = 999)
+
+#install libraries
+library(ncdf4)
+library(sp)
+library(raster)
+library(timeDate)
+library(PCICt)
+library(ncdf.tools)
+library(chron)
+library(HiClimR)
+library(SpatialEpi)
+library(raster)
+library(PCICt)
+library(tidyverse)
+library(rgdal)
+
+#import and open the .nc file into R
+
+fn1 <-"pr_rcp85_land-cpm_uk_5km_10_1hr_20340101-20340130.nc"
+nc1 <-nc_open(fn1)
+fn2 <-"pr_rcp85_land-cpm_uk_5km_10_1hr_20340201-20340230.nc"
+nc2 <-nc_open(fn2)
+fn3 <-"pr_rcp85_land-cpm_uk_5km_10_1hr_20340301-20340330.nc"
+nc3 <-nc_open(fn3)
+fn4 <-"pr_rcp85_land-cpm_uk_5km_10_1hr_20340401-20340430.nc"
+nc4 <-nc_open(fn4)
+fn5 <-"pr_rcp85_land-cpm_uk_5km_10_1hr_20340501-20340530.nc"
+nc5 <-nc_open(fn5)
+fn6 <-"pr_rcp85_land-cpm_uk_5km_10_1hr_20340601-20340630.nc"
+nc6 <-nc_open(fn6)
+fn7 <-"pr_rcp85_land-cpm_uk_5km_10_1hr_20340701-20340730.nc"
+nc7 <-nc_open(fn7)
+fn8 <-"pr_rcp85_land-cpm_uk_5km_10_1hr_20340801-20340830.nc"
+nc8 <-nc_open(fn8)
+fn9 <-"pr_rcp85_land-cpm_uk_5km_10_1hr_20340901-20340930.nc"
+nc9 <-nc_open(fn9)
+fn10 <-"pr_rcp85_land-cpm_uk_5km_10_1hr_20341001-20341030.nc"
+nc10 <-nc_open(fn10)
+fn11 <-"pr_rcp85_land-cpm_uk_5km_10_1hr_20341101-20341130.nc"
+nc11 <-nc_open(fn11)
+fn12 <-"pr_rcp85_land-cpm_uk_5km_10_1hr_20341201-20341230.nc"
+nc12 <-nc_open(fn12)
+
+nc1
+
+#important the variables into R
+
+jan_x <-ncvar_get(nc1, "projection_x_coordinate")
+jan_y <-ncvar_get(nc1, "projection_y_coordinate")
+jan_em <- 1
+
+feb_x <-ncvar_get(nc2, "projection_x_coordinate")
+feb_y <-ncvar_get(nc2, "projection_y_coordinate")
+feb_em <- 1
+
+mar_x <-ncvar_get(nc3, "projection_x_coordinate")
+mar_y <-ncvar_get(nc3, "projection_y_coordinate")
+mar_em <- 1
+
+apr_x <-ncvar_get(nc4, "projection_x_coordinate")
+apr_y <-ncvar_get(nc4, "projection_y_coordinate")
+apr_em <- 1
+
+may_x <-ncvar_get(nc5, "projection_x_coordinate")
+may_y <-ncvar_get(nc5, "projection_y_coordinate")
+may_em <- 1
+
+jun_x <-ncvar_get(nc6, "projection_x_coordinate")
+jun_y <-ncvar_get(nc6, "projection_y_coordinate")
+jun_em <- 1
+
+jul_x <-ncvar_get(nc7, "projection_x_coordinate")
+jul_y <-ncvar_get(nc7, "projection_y_coordinate")
+jul_em <- 1
+
+aug_x <-ncvar_get(nc8, "projection_x_coordinate")
+aug_y <-ncvar_get(nc8, "projection_y_coordinate")
+aug_em <- 1
+
+sept_x <-ncvar_get(nc9, "projection_x_coordinate")
+sept_y <-ncvar_get(nc9, "projection_y_coordinate")
+sept_em <- 1
+
+oct_x <-ncvar_get(nc10, "projection_x_coordinate")
+oct_y <-ncvar_get(nc10, "projection_y_coordinate")
+oct_em <- 1
+
+nov_x <-ncvar_get(nc11, "projection_x_coordinate")
+nov_y <-ncvar_get(nc11, "projection_y_coordinate")
+nov_em <- 1
+
+dec_x <-ncvar_get(nc12, "projection_x_coordinate")
+dec_y <-ncvar_get(nc12, "projection_y_coordinate")
+dec_em <- 1
+
+#create the time series for each month 
+
+cal <- "360_day"
+jan.origin <- "2034-01-01 00:00:00"
+feb.origin <- "2034-02-01 00:00:00"
+mar.origin <- "2034-03-01 00:00:00"
+apr.origin <- "2034-04-01 00:00:00"
+may.origin <- "2034-05-01 00:00:00"
+jun.origin <- "2034-06-01 00:00:00"
+jul.origin <- "2034-07-01 00:00:00"
+aug.origin <- "2034-08-01 00:00:00"
+sept.origin <- "2034-09-01 00:00:00"
+oct.origin <- "2034-10-01 00:00:00"
+nov.origin <- "2034-11-01 00:00:00"
+dec.origin <- "2034-12-01 00:00:00"
+
+
+hours.per.day <- 60*60
+data.day <- 0:719
+
+jan.origin.pcict <- as.PCICt(jan.origin, cal)
+feb.origin.pcict <- as.PCICt(feb.origin, cal)
+mar.origin.pcict <- as.PCICt(mar.origin, cal)
+apr.origin.pcict <- as.PCICt(apr.origin, cal)
+may.origin.pcict <- as.PCICt(may.origin, cal)
+jun.origin.pcict <- as.PCICt(jun.origin, cal)
+jul.origin.pcict <- as.PCICt(jul.origin, cal)
+aug.origin.pcict <- as.PCICt(aug.origin, cal)
+sept.origin.pcict <- as.PCICt(sept.origin, cal)
+oct.origin.pcict <- as.PCICt(oct.origin, cal)
+nov.origin.pcict <- as.PCICt(nov.origin, cal)
+dec.origin.pcict <- as.PCICt(dec.origin, cal)
+
+jan.time <- jan.origin.pcict + (data.day * hours.per.day)
+jan.time
+feb.time <- feb.origin.pcict + (data.day * hours.per.day)
+mar.time <- mar.origin.pcict + (data.day * hours.per.day)
+apr.time <- apr.origin.pcict + (data.day * hours.per.day)
+may.time <- may.origin.pcict + (data.day * hours.per.day)
+jun.time <- jun.origin.pcict + (data.day * hours.per.day)
+jul.time <- jul.origin.pcict + (data.day * hours.per.day)
+aug.time <- aug.origin.pcict + (data.day * hours.per.day)
+sept.time <- sept.origin.pcict + (data.day * hours.per.day)
+oct.time <- oct.origin.pcict + (data.day * hours.per.day)
+nov.time <- nov.origin.pcict + (data.day * hours.per.day)
+dec.time <- dec.origin.pcict + (data.day * hours.per.day)
+
+
+#find the coordinate element numbers of the three weather stations using indexing
+
+jan_x
+jan_y
+
+e.x_rng = c(322500)
+d.x_rng = c(387500)
+l.x.rng = c(347500)
+
+e.y.rng = c(602500)
+d.y.rng = c(812500)
+l.y.rng = c(722500)
+
+#create indexs
+
+e.x.ind = which(jan_x >= e.x_rng & jan_x <= 323000)
+e.x.ind
+d.x.ind = which(jan_x >= d.x_rng & jan_x <= 388000)
+d.x.ind
+l.x.ind = which(jan_x >= l.x.rng & jan_x <= 348000)
+l.x.ind
+
+e.y.ind = which(jan_y >= e.y.rng & jan_y <= 603000)
+e.y.ind
+d.y.ind = which(jan_y >= d.y.rng & jan_y <= 813000)
+d.y.ind
+l.y.ind = which(jan_y >= l.y.rng & jan_y <= 723000)
+l.y.ind
+
+#create rainfall time series 
+
+
+#eskdalemuir 
+
+pr.ts.jan.e = ncvar_get(nc1, "pr", start=c(e.x.ind, e.y.ind, 1, jan_em), count = c(length(e.x.ind),length(e.y.ind), -1, 1 ))
+pr.ts.feb.e = ncvar_get(nc2, "pr", start=c(e.x.ind, e.y.ind, 1, feb_em), count = c(length(e.x.ind),length(e.y.ind), -1, 1 ))
+pr.ts.mar.e = ncvar_get(nc3, "pr", start=c(e.x.ind, e.y.ind, 1, mar_em), count = c(length(e.x.ind),length(e.y.ind), -1, 1 ))
+pr.ts.apr.e = ncvar_get(nc4, "pr", start=c(e.x.ind, e.y.ind, 1, apr_em), count = c(length(e.x.ind),length(e.y.ind), -1, 1 ))
+pr.ts.may.e = ncvar_get(nc5, "pr", start=c(e.x.ind, e.y.ind, 1, may_em), count = c(length(e.x.ind),length(e.y.ind), -1, 1 ))
+pr.ts.jun.e = ncvar_get(nc6, "pr", start=c(e.x.ind, e.y.ind, 1, jun_em), count = c(length(e.x.ind),length(e.y.ind), -1, 1 ))
+pr.ts.jul.e = ncvar_get(nc7, "pr", start=c(e.x.ind, e.y.ind, 1, jul_em), count = c(length(e.x.ind),length(e.y.ind), -1, 1 ))
+pr.ts.aug.e = ncvar_get(nc8, "pr", start=c(e.x.ind, e.y.ind, 1, aug_em), count = c(length(e.x.ind),length(e.y.ind), -1, 1 ))
+pr.ts.sep.e = ncvar_get(nc9, "pr", start=c(e.x.ind, e.y.ind, 1, sept_em), count = c(length(e.x.ind),length(e.y.ind), -1, 1 ))
+pr.ts.oct.e = ncvar_get(nc10,"pr", start=c(e.x.ind, e.y.ind, 1, oct_em), count = c(length(e.x.ind),length(e.y.ind), -1, 1 ))
+pr.ts.nov.e = ncvar_get(nc11,"pr", start=c(e.x.ind, e.y.ind, 1, nov_em), count = c(length(e.x.ind),length(e.y.ind), -1, 1 ))
+pr.ts.dec.e = ncvar_get(nc12,"pr", start=c(e.x.ind, e.y.ind, 1, dec_em), count = c(length(e.x.ind),length(e.y.ind), -1, 1 ))
+
+#dyce
+
+pr.ts.jan.d = ncvar_get(nc1, "pr", start=c(d.x.ind, d.y.ind, 1, jan_em), count = c(length(d.x.ind),length(d.y.ind), -1, 1 ))
+pr.ts.feb.d = ncvar_get(nc2, "pr", start=c(d.x.ind, d.y.ind, 1, feb_em), count = c(length(d.x.ind),length(d.y.ind), -1, 1 ))
+pr.ts.mar.d = ncvar_get(nc3, "pr", start=c(d.x.ind, d.y.ind, 1, mar_em), count = c(length(d.x.ind),length(d.y.ind), -1, 1 ))
+pr.ts.apr.d = ncvar_get(nc4, "pr", start=c(d.x.ind, d.y.ind, 1, apr_em), count = c(length(d.x.ind),length(d.y.ind), -1, 1 ))
+pr.ts.may.d = ncvar_get(nc5, "pr", start=c(d.x.ind, d.y.ind, 1, may_em), count = c(length(d.x.ind),length(d.y.ind), -1, 1 ))
+pr.ts.jun.d = ncvar_get(nc6, "pr", start=c(d.x.ind, d.y.ind, 1, jun_em), count = c(length(d.x.ind),length(d.y.ind), -1, 1 ))
+pr.ts.jul.d = ncvar_get(nc7, "pr", start=c(d.x.ind, d.y.ind, 1, jul_em), count = c(length(d.x.ind),length(d.y.ind), -1, 1 ))
+pr.ts.aug.d = ncvar_get(nc8, "pr", start=c(d.x.ind, d.y.ind, 1, aug_em), count = c(length(d.x.ind),length(d.y.ind), -1, 1 ))
+pr.ts.sep.d = ncvar_get(nc9, "pr", start=c(d.x.ind, d.y.ind, 1, sept_em), count = c(length(d.x.ind),length(d.y.ind), -1, 1 ))
+pr.ts.oct.d = ncvar_get(nc10,"pr", start=c(d.x.ind, d.y.ind, 1, oct_em), count = c(length(d.x.ind),length(d.y.ind), -1, 1 ))
+pr.ts.nov.d = ncvar_get(nc11,"pr", start=c(d.x.ind, d.y.ind, 1, nov_em), count = c(length(d.x.ind),length(d.y.ind), -1, 1 ))
+pr.ts.dec.d = ncvar_get(nc12,"pr", start=c(d.x.ind, d.y.ind, 1, dec_em), count = c(length(d.x.ind),length(d.y.ind), -1, 1 ))
+
+#leuchars
+
+pr.ts.jan.l = ncvar_get(nc1, "pr", start=c(l.x.ind, l.y.ind, 1, jan_em), count = c(length(l.x.ind),length(l.y.ind), -1, 1 ))
+pr.ts.feb.l = ncvar_get(nc2, "pr", start=c(l.x.ind, l.y.ind, 1, feb_em), count = c(length(l.x.ind),length(l.y.ind), -1, 1 ))
+pr.ts.mar.l = ncvar_get(nc3, "pr", start=c(l.x.ind, l.y.ind, 1, mar_em), count = c(length(l.x.ind),length(l.y.ind), -1, 1 ))
+pr.ts.apr.l = ncvar_get(nc4, "pr", start=c(l.x.ind, l.y.ind, 1, apr_em), count = c(length(l.x.ind),length(l.y.ind), -1, 1 ))
+pr.ts.may.l = ncvar_get(nc5, "pr", start=c(l.x.ind, l.y.ind, 1, may_em), count = c(length(l.x.ind),length(l.y.ind), -1, 1 ))
+pr.ts.jun.l = ncvar_get(nc6, "pr", start=c(l.x.ind, l.y.ind, 1, jun_em), count = c(length(l.x.ind),length(l.y.ind), -1, 1 ))
+pr.ts.jul.l = ncvar_get(nc7, "pr", start=c(l.x.ind, l.y.ind, 1, jul_em), count = c(length(l.x.ind),length(l.y.ind), -1, 1 ))
+pr.ts.aug.l = ncvar_get(nc8, "pr", start=c(l.x.ind, l.y.ind, 1, aug_em), count = c(length(l.x.ind),length(l.y.ind), -1, 1 ))
+pr.ts.sep.l = ncvar_get(nc9, "pr", start=c(l.x.ind, l.y.ind, 1, sept_em), count = c(length(l.x.ind),length(l.y.ind), -1, 1 ))
+pr.ts.oct.l = ncvar_get(nc10,"pr", start=c(l.x.ind, l.y.ind, 1, oct_em), count = c(length(l.x.ind),length(l.y.ind), -1, 1 ))
+pr.ts.nov.l = ncvar_get(nc11,"pr", start=c(l.x.ind, l.y.ind, 1, nov_em), count = c(length(l.x.ind),length(l.y.ind), -1, 1 ))
+pr.ts.dec.l = ncvar_get(nc12,"pr", start=c(l.x.ind, l.y.ind, 1, dec_em), count = c(length(l.x.ind),length(l.y.ind), -1, 1 ))
+
+#create dataframes for the year for each weather station where x is hourly time and y is rainfall depth (mm)
+
+#Eskdalemuir 
+
+e.rainfall <- c(pr.ts.jan.e, pr.ts.feb.e, pr.ts.mar.e, pr.ts.apr.e, pr.ts.may.e, pr.ts.jun.e, pr.ts.jul.e, pr.ts.aug.e, pr.ts.sep.e, pr.ts.oct.e, pr.ts.nov.e, pr.ts.dec.e)
+e.dt <-c(jan.time, feb.time, mar.time, apr.time, may.time, jun.time, jul.time, aug.time, sept.time, oct.time, nov.time, dec.time)
+ex_e.datetime <- as.character.PCICt(e.dt)
+e.year <-data.frame(e.rainfall, ex_e.datetime)
+e.year
+head(e.year)
+tail(e.year)
+sum(e.year$e.rainfall)
+
+#Dyce
+
+d.rainfall <- c(pr.ts.jan.d, pr.ts.feb.d, pr.ts.mar.d, pr.ts.apr.d, pr.ts.may.d, pr.ts.jun.d, pr.ts.jul.d, pr.ts.aug.d, pr.ts.sep.d, pr.ts.oct.d, pr.ts.nov.d, pr.ts.dec.d)
+d.dt <-c(jan.time, feb.time, mar.time, apr.time, may.time, jun.time, jul.time, aug.time, sept.time, oct.time, nov.time, dec.time)
+ex_d.datetime <- as.character.PCICt(d.dt)
+d.year <-data.frame(d.rainfall, ex_d.datetime)
+d.year
+head(d.year)
+tail(d.year)
+sum(d.year$d.rainfall)
+
+#leuchars
+
+l.rainfall <- c(pr.ts.jan.l, pr.ts.feb.l, pr.ts.mar.l, pr.ts.apr.l, pr.ts.may.l, pr.ts.jun.l, pr.ts.jul.l, pr.ts.aug.l, pr.ts.sep.l, pr.ts.oct.l, pr.ts.nov.l, pr.ts.dec.l)
+l.dt <-c(jan.time, feb.time, mar.time, apr.time, may.time, jun.time, jul.time, aug.time, sept.time, oct.time, nov.time, dec.time)
+ex_l.datetime <- as.character.PCICt(l.dt)
+l.year <-data.frame(l.rainfall, ex_l.datetime)
+l.year
+head(l.year)
+tail(l.year)
+sum(l.year$l.rainfall)
+
+write.csv(e.year,"2034\\eskdalemuir2034.csv", row.names = FALSE)
+write.csv(d.year,"2034\\dyce2034.csv", row.names = FALSE)
+write.csv(l.year,"2034\\leuchars2034.csv", row.names = FALSE)
+
+nc_close(nc1)
+nc_close(nc2)
+nc_close(nc3)
+nc_close(nc4)
+nc_close(nc5)
+nc_close(nc6)
+nc_close(nc7)
+nc_close(nc8)
+nc_close(nc9)
+nc_close(nc10)
+nc_close(nc11)
+nc_close(nc12)
